@@ -4,7 +4,7 @@ import './index.css';
 
 function Square(props) {
     return (
-            <button className="square"
+            <button className="square" disabled={!props.enable}
                     onClick={props.onClick}>
                 {props.value}
             </button>
@@ -14,7 +14,7 @@ function Square(props) {
 class Board extends React.Component {
 
     renderSquare(i) {
-        return <Square value={this.props.squares[i]}
+        return <Square value={this.props.squares[i]} enable={this.props.enable}
                 onClick={()=> this.props.onClick(i) } />;
     }
 
@@ -45,13 +45,19 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
 
+        this.inputRef = React.createRef();
+
         this.state = {
             history : [{
                 squares: Array(9).fill(null),
 
             }],
             xIsNext: true,
+            name: "",
         };
+
+        this.updateName = this.updateName.bind(this);
+
     }
 
     handleClick(i){
@@ -70,12 +76,22 @@ class Game extends React.Component {
                 squares: squares,
             }]),
             xIsNext: !this.state.xIsNext});
+
+    }
+
+    updateName(event){
+        this.setState({
+            name:event.target.value,
+        });
+
     }
 
     render() {
         const history = this.state.history;
         const current = history[history.length-1];
         const winner = calculateWinner(current.squares);
+
+
         let status;
         if (winner){
             status = 'Winner: ' + winner;
@@ -86,13 +102,20 @@ class Game extends React.Component {
 
         return (
             <div className="game">
-                <div className="game-board">
-                    <Board squares = {current.squares}
+                <div className="game-board" >
+                    <Board squares = {current.squares} enable={this.state.name!==""}
                     onClick={(i)=>this.handleClick(i)}/>
                 </div>
                 <div className="game-info">
+                    <input ref={this.inputRef} disabled={this.state.name!==""}></input>
+                    <button disabled={this.state.name!==""}
+                            onClick={(event)=>{this.setState({'name':this.inputRef.current.value})}}>
+                        確認名字
+                    </button>
                     <div>{status}</div>
                     <ol>{/* TODO */}</ol>
+
+
                 </div>
             </div>
         );
@@ -119,8 +142,8 @@ function calculateWinner(squares){
     for (let i = 0; i < lines.length; i++) {
         let line = lines[i];
         console.log("line"+line);
-        if(squares[line[0]] == squares[line[1]] &&
-            squares[line[1]] == squares[line[2]] &&
+        if(squares[line[0]] === squares[line[1]] &&
+            squares[line[1]] === squares[line[2]] &&
             squares[line[0]]){
             return squares[line[0]];
         }
