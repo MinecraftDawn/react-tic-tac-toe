@@ -14,7 +14,7 @@ function Square(props) {
 function Board(props) {
 
     function renderSquare(i) {
-        return <Square value={props.squares[i]} enable={props.enable}
+        return <Square value={props.board[i]} enable={props.enable}
                        onClick={() => props.onClick(i)}/>;
     }
 
@@ -47,39 +47,60 @@ class Game extends React.Component {
         this.inputRef = React.createRef();
 
         this.state = {
-            history: [{
-                squares: Array(9).fill(null),
-
-            }],
+            board: Array(9).fill(' '),
             xIsNext: true,
-            name: "",
+            name: '',
         };
-
         this.updateName = this.updateName.bind(this);
-
+        this.timer = null;
     }
 
+    // componentDidMount() {
+    //     this.timer = setInterval(()=>{console.log('www')}, 1000);
+    // }
+    //
+    // componentWillUnmount() {
+    //     clearInterval(this.timer);
+    //     this.timer = null;
+    // }
+
     handleClick(i) {
-        const history = this.state.history;
-        const current = history[history.length - 1];
+        const board = this.state.board.slice();
 
         // Immutability
-        const squares = current.squares.slice();
-        if (calculateWinner(squares) || squares[i]) {
+        if (calculateWinner(board)) {
+            if(this.timer !== null){
+                clearInterval(this.timer);
+                this.timer = null;
+            }
             return;
         }
+        if (board[i] !== ' '){
+            return
+        }
 
-        squares[i] = this.state.xIsNext ? 'X' : 'O';
-        this.setState({
-            history: history.concat([{
-                squares: squares,
-            }]),
-            xIsNext: !this.state.xIsNext
-        });
+        // board[i] = this.state.sign;
+        // this.setState({
+        //     board: board,
+        // });
 
         fetch(`https://localhost:7138/TicTacToe/game?player=${this.state.name}&number=${i}`,
-            {method: 'PATCH'});
+            {method: 'PATCH'}).then(resp=>{
+            this.updateStateFromServer(this.state.name);
+        });
 
+        if(this.timer === null){
+            this.timer = setInterval(()=>{this.updateStateFromServer(this.state.name)}, 300);
+        }
+    }
+
+    updateStateFromServer(player){
+        fetch('https://localhost:7138/TicTacToe/game?player='+player,
+            {method:'GET'}).then((resp) =>{
+            return resp.json()
+        }).then(data =>{
+            this.setState(data);
+        })
     }
 
     updateName(event) {
@@ -87,21 +108,14 @@ class Game extends React.Component {
             name: this.inputRef.current.value
         });
 
-        fetch('https://localhost:7138/TicTacToe/game', {method: 'POST'});
+        fetch('https://localhost:7138/TicTacToe/game?player='+this.inputRef.current.value, {method: 'POST', body: {player:this.inputRef.current.value}});
 
-        fetch('https://localhost:7138/TicTacToe/game?player='+this.inputRef.current.value,
-            {method:'GET'}).then((resp) =>{
-                return resp.json()
-        }).then(data =>{
-            this.setState(data);
-        })
-
+        this.updateStateFromServer(this.inputRef.current.value);
     }
 
     render() {
-        const history = this.state.history;
-        const current = history[history.length - 1];
-        const winner = calculateWinner(current.squares);
+        const board = this.state.board;
+        const winner = calculateWinner(board);
 
 
         let status;
@@ -115,7 +129,7 @@ class Game extends React.Component {
         return (
             <div className="game">
                 <div className="game-board">
-                    <Board squares={current.squares} enable={this.state.name !== ""}
+                    <Board board={board} enable={this.state.name !== ""}
                            onClick={(i) => this.handleClick(i)}/>
                 </div>
                 <div className="game-info">
@@ -139,7 +153,7 @@ class Game extends React.Component {
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<Game/>);
 
-function calculateWinner(squares) {
+function calculateWinner(board) {
     const lines = [
         [0, 1, 2],
         [3, 4, 5],
@@ -153,10 +167,10 @@ function calculateWinner(squares) {
 
     for (let i = 0; i < lines.length; i++) {
         let line = lines[i];
-        if (squares[line[0]] === squares[line[1]] &&
-            squares[line[1]] === squares[line[2]] &&
-            squares[line[0]]) {
-            return squares[line[0]];
+        if (board[line[0]] === board[line[1]] &&
+            board[line[1]] === board[line[2]] &&
+            board[line[0]] !== ' ') {
+            return board[line[0]];
         }
     }
     return null;
