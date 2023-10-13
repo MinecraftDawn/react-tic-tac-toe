@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import * as signalR from '@microsoft/signalr';
 
 function Square(props) {
     return (
@@ -40,6 +41,37 @@ function Board(props) {
 
 }
 
+let connection = new signalR.HubConnectionBuilder()
+    .configureLogging(signalR.LogLevel.Debug)
+    .withUrl('https://localhost:7138/Test',
+        {
+            skipNegotiation: true,
+            transport: signalR.HttpTransportType.WebSockets
+        }
+        )
+    .build();
+
+connection.on('ReceiveMessage', function (user, message) {
+    console.log(user, message);
+})
+
+connection.start().then(function () {
+
+}).catch(function (err) {
+    console.log(err.toString());
+});
+
+setTimeout(()=>{
+    connection.invoke("SendMessage", 'user', 'message').catch(function (err) {
+        return console.error(err.toString());
+    });
+}, 5000);
+// connection.invoke("sendAll", 'user', 'message').catch(function (err) {
+//     return console.error(err.toString());
+// });
+
+// connection.invoke('sendAll', 'user1', 'Hello world');
+
 class Game extends React.Component {
     constructor(props) {
         super(props);
@@ -53,6 +85,8 @@ class Game extends React.Component {
         };
         this.updateName = this.updateName.bind(this);
         this.timer = null;
+
+
     }
 
     // componentDidMount() {
@@ -69,13 +103,13 @@ class Game extends React.Component {
 
         // Immutability
         if (calculateWinner(board)) {
-            if(this.timer !== null){
+            if (this.timer !== null) {
                 clearInterval(this.timer);
                 this.timer = null;
             }
             return;
         }
-        if (board[i] !== ' '){
+        if (board[i] !== ' ') {
             return
         }
 
@@ -85,20 +119,22 @@ class Game extends React.Component {
         // });
 
         fetch(`https://localhost:7138/TicTacToe/game?player=${this.state.name}&number=${i}`,
-            {method: 'PATCH'}).then(resp=>{
+            {method: 'PATCH'}).then(resp => {
             this.updateStateFromServer(this.state.name);
         });
 
-        if(this.timer === null){
-            this.timer = setInterval(()=>{this.updateStateFromServer(this.state.name)}, 300);
+        if (this.timer === null) {
+            this.timer = setInterval(() => {
+                this.updateStateFromServer(this.state.name)
+            }, 300);
         }
     }
 
-    updateStateFromServer(player){
-        fetch('https://localhost:7138/TicTacToe/game?player='+player,
-            {method:'GET'}).then((resp) =>{
+    updateStateFromServer(player) {
+        fetch('https://localhost:7138/TicTacToe/game?player=' + player,
+            {method: 'GET'}).then((resp) => {
             return resp.json()
-        }).then(data =>{
+        }).then(data => {
             this.setState(data);
         })
     }
@@ -108,12 +144,17 @@ class Game extends React.Component {
             name: this.inputRef.current.value
         });
 
-        fetch('https://localhost:7138/TicTacToe/game?player='+this.inputRef.current.value, {method: 'POST', body: {player:this.inputRef.current.value}});
+        fetch('https://localhost:7138/TicTacToe/game?player=' + this.inputRef.current.value, {
+            method: 'POST',
+            body: {player: this.inputRef.current.value}
+        });
 
         this.updateStateFromServer(this.inputRef.current.value);
     }
 
     render() {
+
+
         const board = this.state.board;
         const winner = calculateWinner(board);
 
@@ -122,7 +163,7 @@ class Game extends React.Component {
         if (winner) {
             status = 'Winner: ' + winner;
         } else {
-            status = 'Next player: ' + (this.props.xIsNext ? 'X' : 'O');
+            status = this.state.sign === undefined || this.state.sign === null ? 'Waiting for game start' : 'You are ' + this.state.sign;
         }
 
 
