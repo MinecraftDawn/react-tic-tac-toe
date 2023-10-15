@@ -41,31 +41,7 @@ function Board(props) {
 
 }
 
-let connection = new signalR.HubConnectionBuilder()
-    .configureLogging(signalR.LogLevel.Debug)
-    .withUrl('https://localhost:7138/Test',
-        {
-            skipNegotiation: true,
-            transport: signalR.HttpTransportType.WebSockets
-        }
-        )
-    .build();
 
-connection.on('ReceiveMessage', function (user, message) {
-    console.log(user, message);
-})
-
-connection.start().then(function () {
-
-}).catch(function (err) {
-    console.log(err.toString());
-});
-
-setTimeout(()=>{
-    connection.invoke("SendMessage", 'user', 'message').catch(function (err) {
-        return console.error(err.toString());
-    });
-}, 5000);
 // connection.invoke("sendAll", 'user', 'message').catch(function (err) {
 //     return console.error(err.toString());
 // });
@@ -86,6 +62,31 @@ class Game extends React.Component {
         this.updateName = this.updateName.bind(this);
         this.timer = null;
 
+        this.connection = new signalR.HubConnectionBuilder()
+            .configureLogging(signalR.LogLevel.Debug)
+            .withUrl('https://localhost:7138/Test',
+                {
+                    skipNegotiation: true,
+                    transport: signalR.HttpTransportType.WebSockets
+                }
+            )
+            .build();
+
+        this.connection.on('ReceiveMessage', function (user, message) {
+            console.log(user, message);
+        })
+
+        this.connection.start().then(function () {
+
+        }).catch(function (err) {
+            console.log(err.toString());
+        });
+
+        // setTimeout(()=>{
+        //     this.connectionconnection.invoke("SendMessage", 'A', 'message').catch(function (err) {
+        //         return console.error(err.toString());
+        //     });
+        // }, 5000);
 
     }
 
