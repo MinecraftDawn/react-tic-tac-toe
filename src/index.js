@@ -72,8 +72,9 @@ class Game extends React.Component {
             )
             .build();
 
-        this.connection.on('ReceiveMessage', function (user, message) {
-            console.log(user, message);
+        this.connection.on('ReceiveMessage', (gameState) => {
+            this.setState({...gameState})
+            // console.log(user, message);
         })
 
         this.connection.start().then(function () {
@@ -124,20 +125,20 @@ class Game extends React.Component {
             this.updateStateFromServer(this.state.name);
         });
 
-        if (this.timer === null) {
-            this.timer = setInterval(() => {
-                this.updateStateFromServer(this.state.name)
-            }, 300);
-        }
+        // if (this.timer === null) {
+        //     this.timer = setInterval(() => {
+        //         this.updateStateFromServer(this.state.name)
+        //     }, 300);
+        // }
     }
 
     updateStateFromServer(player) {
-        fetch('https://localhost:7138/TicTacToe/game?player=' + player,
-            {method: 'GET'}).then((resp) => {
-            return resp.json()
-        }).then(data => {
-            this.setState(data);
-        })
+        // fetch('https://localhost:7138/TicTacToe/game?player=' + player,
+        //     {method: 'GET'}).then((resp) => {
+        //     return resp.json()
+        // }).then(data => {
+        //     this.setState(data);
+        // })
     }
 
     updateName(event) {
