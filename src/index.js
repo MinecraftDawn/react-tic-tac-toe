@@ -77,6 +77,11 @@ class Game extends React.Component {
             // console.log(user, message);
         })
 
+        this.connection.on('sayHi', (msg) => {
+            console.log(msg)
+            // console.log(user, message);
+        })
+
         this.connection.start().then(function () {
 
         }).catch(function (err) {
@@ -149,6 +154,9 @@ class Game extends React.Component {
         fetch('https://localhost:7138/TicTacToe/game?player=' + this.inputRef.current.value, {
             method: 'POST',
             body: {player: this.inputRef.current.value}
+        });
+        this.connection.invoke("joinWebsocket", this.inputRef.current.value).catch(function (err) {
+            return console.error(err.toString());
         });
 
         this.updateStateFromServer(this.inputRef.current.value);
