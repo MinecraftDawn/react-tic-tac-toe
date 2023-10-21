@@ -151,10 +151,10 @@ class Game extends React.Component {
             name: this.inputRef.current.value
         });
 
-        fetch('https://localhost:7138/TicTacToe/game?player=' + this.inputRef.current.value, {
-            method: 'POST',
-            body: {player: this.inputRef.current.value}
-        });
+        // fetch('https://localhost:7138/TicTacToe/game?player=' + this.inputRef.current.value, {
+        //     method: 'POST',
+        //     body: {player: this.inputRef.current.value}
+        // });
         this.connection.invoke("joinWebsocket", this.inputRef.current.value).catch(function (err) {
             return console.error(err.toString());
         });
