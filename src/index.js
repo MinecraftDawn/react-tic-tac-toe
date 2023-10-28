@@ -166,11 +166,11 @@ class Game extends React.Component {
 
 
         const board = this.state.board;
-        const winner = calculateWinner(board);
+        const winner = this.state.winner;
 
 
         let status;
-        if (winner) {
+        if (winner !== undefined && winner !== '' && winner !== ' ') {
             status = 'Winner: ' + winner;
         } else {
             status = this.state.sign === undefined || this.state.sign === null ? 'Waiting for game start' : 'You are ' + this.state.sign;
