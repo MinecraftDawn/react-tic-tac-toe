@@ -82,11 +82,7 @@ class Game extends React.Component {
             // console.log(user, message);
         })
 
-        this.connection.start().then(function () {
 
-        }).catch(function (err) {
-            console.log(err.toString());
-        });
 
         // setTimeout(()=>{
         //     this.connectionconnection.invoke("SendMessage", 'A', 'message').catch(function (err) {
@@ -150,6 +146,15 @@ class Game extends React.Component {
         this.setState({
             name: this.inputRef.current.value
         });
+
+        if(this.connection.state === 'Disconnected'){
+            this.connection.start().then(function () {
+
+            }).catch(function (err) {
+                console.log(err.toString());
+            });
+
+        }
 
         // fetch('https://localhost:7138/TicTacToe/game?player=' + this.inputRef.current.value, {
         //     method: 'POST',
