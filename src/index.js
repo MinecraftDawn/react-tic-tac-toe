@@ -121,10 +121,15 @@ class Game extends React.Component {
         //     board: board,
         // });
 
-        fetch(`https://localhost:7138/TicTacToe/game?player=${this.state.name}&number=${i}`,
-            {method: 'PATCH'}).then(resp => {
-            this.updateStateFromServer(this.state.name);
+
+        this.connection.invoke("modifyCell", i).catch(function (err) {
+            return console.error(err.toString());
         });
+
+        // fetch(`https://localhost:7138/TicTacToe/game?player=${this.state.name}&number=${i}`,
+        //     {method: 'PATCH'}).then(resp => {
+        //     this.updateStateFromServer(this.state.name);
+        // });
 
         // if (this.timer === null) {
         //     this.timer = setInterval(() => {
@@ -149,13 +154,13 @@ class Game extends React.Component {
 
         if(this.connection.state === 'Disconnected'){
             this.connection.start().then(function () {
-
+            console.log(this.connection.state)
             }).catch(function (err) {
                 console.log(err.toString());
             });
 
         }
-
+        console.log(this.connection.state)
         // fetch('https://localhost:7138/TicTacToe/game?player=' + this.inputRef.current.value, {
         //     method: 'POST',
         //     body: {player: this.inputRef.current.value}
