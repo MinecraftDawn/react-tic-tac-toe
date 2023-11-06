@@ -5,7 +5,8 @@ import * as signalR from '@microsoft/signalr';
 
 function Square(props) {
     return (
-        <button className="square" disabled={!props.enable}
+        <button className="square"
+                // disabled={!props.enable}
                 onClick={props.onClick}>
             {props.value}
         </button>
@@ -15,7 +16,8 @@ function Square(props) {
 function Board(props) {
 
     function renderSquare(i) {
-        return <Square value={props.board[i]} enable={props.enable}
+        return <Square value={props.board[i]}
+                       // enable={props.enable}
                        onClick={() => props.onClick(i)}/>;
     }
 
@@ -59,7 +61,7 @@ class Game extends React.Component {
             xIsNext: true,
             name: '',
         };
-        this.updateName = this.updateName.bind(this);
+        this.startGame = this.startGame.bind(this);
         this.timer = null;
 
         this.connection = new signalR.HubConnectionBuilder()
@@ -147,10 +149,10 @@ class Game extends React.Component {
         // })
     }
 
-    updateName(event) {
-        this.setState({
-            name: this.inputRef.current.value
-        });
+    startGame(event) {
+        // this.setState({
+        //     name: this.inputRef.current.value
+        // });
 
         if(this.connection.state === 'Disconnected'){
             this.connection.start().then(function () {
@@ -165,11 +167,11 @@ class Game extends React.Component {
         //     method: 'POST',
         //     body: {player: this.inputRef.current.value}
         // });
-        this.connection.invoke("joinWebsocket", this.inputRef.current.value).catch(function (err) {
-            return console.error(err.toString());
-        });
+        // this.connection.invoke("joinWebsocket", this.inputRef.current.value).catch(function (err) {
+        //     return console.error(err.toString());
+        // });
 
-        this.updateStateFromServer(this.inputRef.current.value);
+        // this.updateStateFromServer(this.inputRef.current.value);
     }
 
     render() {
@@ -190,14 +192,15 @@ class Game extends React.Component {
         return (
             <div className="game">
                 <div className="game-board">
-                    <Board board={board} enable={this.state.name !== ""}
+                    <Board board={board}
+                           // enable={this.state.name !== ""}
                            onClick={(i) => this.handleClick(i)}/>
                 </div>
                 <div className="game-info">
-                    <input ref={this.inputRef} disabled={this.state.name !== ""}></input>
+                    {/*<input ref={this.inputRef} disabled={this.state.name !== ""}></input>*/}
                     <button disabled={this.state.name !== ""}
-                            onClick={this.updateName}>
-                        確認名字
+                            onClick={this.startGame}>
+                        加入遊戲
                     </button>
                     <div>{status}</div>
                     <ol>{/* TODO */}</ol>
