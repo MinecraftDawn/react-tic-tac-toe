@@ -1,13 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import * as signalR from '@microsoft/signalr';
 
 function Square(props) {
+    const img = props.value === ' ' ? '' : props.value === 'X' ? 'cross.svg' : 'circle.svg';
     return (
         <button className="square"
                 // disabled={!props.enable}
-                onClick={props.onClick}>
+                onClick={props.onClick}
+                style={{backgroundImage: `url(${img})`, backgroundSize: 'cover'}}>
+
             {props.value}
         </button>
     )
