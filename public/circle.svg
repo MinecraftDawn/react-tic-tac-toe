@@ -1,2 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><path d="M12,0A12,12,0,1,0,24,12,12,12,0,0,0,12,0Zm0,22A10,10,0,1,1,22,12,10,10,0,0,1,12,22Z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 28 28" width="512" height="512">
+    <path id="circle" d="M14,2A12,12,0,1,0,26,14A12,12,0,0,0,14,2Z" fill="transparent" stroke="#000" stroke-width="2" stroke-dasharray="0" stroke-dashoffset="0">
+        <animate attributeName="stroke-dasharray" from="0 75.4" to="75.4 0" dur="3s" begin="0s" repeatCount="1" fill="freeze" />
+        <animate attributeName="stroke-dashoffset" from="0" to="75.4" dur="3s" begin="0s" repeatCount="1" fill="freeze" />
+    </path>
+</svg>

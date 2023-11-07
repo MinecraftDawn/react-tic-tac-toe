@@ -1,2 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><path d="M23.707.293h0a1,1,0,0,0-1.414,0L12,10.586,1.707.293a1,1,0,0,0-1.414,0h0a1,1,0,0,0,0,1.414L10.586,12,.293,22.293a1,1,0,0,0,0,1.414h0a1,1,0,0,0,1.414,0L12,13.414,22.293,23.707a1,1,0,0,0,1.414,0h0a1,1,0,0,0,0-1.414L13.414,12,23.707,1.707A1,1,0,0,0,23.707.293Z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+    <line x1="10" y1="256" x2="502" y2="256" stroke="black" stroke-width="20" transform="rotate(45, 256, 256)">
+        <animate attributeName="x2" from="10" to="502" dur="2s" begin="0s" fill="freeze" />
+    </line>
+    <line x1="256" y1="10" x2="256" y2="10" stroke="black" stroke-width="20" transform="rotate(45, 256, 256)" >
+        <animate attributeName="y2" from="10" to="502" dur="2s" begin="2s" fill="freeze" />
+    </line>
+</svg>
