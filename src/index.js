@@ -1,18 +1,22 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import * as signalR from '@microsoft/signalr';
 
 function Square(props) {
-    const img = props.value === ' ' ? '' : props.value === 'X' ? 'cross.svg' : 'circle.svg';
-    return (
-        <button className="square"
-                // disabled={!props.enable}
-                onClick={props.onClick}
-                style={{backgroundImage: `url(${img})`, backgroundSize: 'cover'}}>
+    const [imgUrl, setImgUrl] = useState(' ');
 
-            {props.value}
-        </button>
+    useEffect(() => {
+        const randomParam = Math.random();
+        const img = props.value === ' ' ? '' : props.value === 'X' ? `cross.svg??${randomParam}` : `circle.svg?${randomParam}`;
+        setImgUrl(img);
+    }, [props.value]);
+
+    return (
+    <button className="square"
+            onClick={props.onClick}>
+        <img id={'a'+props.index} src={imgUrl} width={'100%'} height={'100%'} alt={props.value}/>
+    </button>
     )
 }
 
@@ -20,6 +24,7 @@ function Board(props) {
 
     function renderSquare(i) {
         return <Square value={props.board[i]}
+                       index={i}
                        // enable={props.enable}
                        onClick={() => props.onClick(i)}/>;
     }
