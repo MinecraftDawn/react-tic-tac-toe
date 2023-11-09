@@ -55,13 +55,6 @@ function Board(props) {
 
 }
 
-
-// connection.invoke("sendAll", 'user', 'message').catch(function (err) {
-//     return console.error(err.toString());
-// });
-
-// connection.invoke('sendAll', 'user1', 'Hello world');
-
 class Game extends React.Component {
     constructor(props) {
         super(props);
@@ -88,32 +81,14 @@ class Game extends React.Component {
 
         this.connection.on('ReceiveMessage', (gameState) => {
             this.setState({...gameState})
-            // console.log(user, message);
         })
 
         this.connection.on('sayHi', (msg) => {
             console.log(msg)
-            // console.log(user, message);
         })
 
 
-
-        // setTimeout(()=>{
-        //     this.connectionconnection.invoke("SendMessage", 'A', 'message').catch(function (err) {
-        //         return console.error(err.toString());
-        //     });
-        // }, 5000);
-
     }
-
-    // componentDidMount() {
-    //     this.timer = setInterval(()=>{console.log('www')}, 1000);
-    // }
-    //
-    // componentWillUnmount() {
-    //     clearInterval(this.timer);
-    //     this.timer = null;
-    // }
 
     handleClick(i) {
         const board = this.state.board.slice();
@@ -130,41 +105,14 @@ class Game extends React.Component {
             return
         }
 
-        // board[i] = this.state.sign;
-        // this.setState({
-        //     board: board,
-        // });
-
 
         this.connection.invoke("modifyCell", i).catch(function (err) {
             return console.error(err.toString());
         });
 
-        // fetch(`https://localhost:7138/TicTacToe/game?player=${this.state.name}&number=${i}`,
-        //     {method: 'PATCH'}).then(resp => {
-        //     this.updateStateFromServer(this.state.name);
-        // });
-
-        // if (this.timer === null) {
-        //     this.timer = setInterval(() => {
-        //         this.updateStateFromServer(this.state.name)
-        //     }, 300);
-        // }
-    }
-
-    updateStateFromServer(player) {
-        // fetch('https://localhost:7138/TicTacToe/game?player=' + player,
-        //     {method: 'GET'}).then((resp) => {
-        //     return resp.json()
-        // }).then(data => {
-        //     this.setState(data);
-        // })
     }
 
     startGame(event) {
-        // this.setState({
-        //     name: this.inputRef.current.value
-        // });
 
         if(this.connection.state === 'Disconnected'){
             this.connection.start().then(function () {
@@ -174,16 +122,6 @@ class Game extends React.Component {
             });
 
         }
-        console.log(this.connection.state)
-        // fetch('https://localhost:7138/TicTacToe/game?player=' + this.inputRef.current.value, {
-        //     method: 'POST',
-        //     body: {player: this.inputRef.current.value}
-        // });
-        // this.connection.invoke("joinWebsocket", this.inputRef.current.value).catch(function (err) {
-        //     return console.error(err.toString());
-        // });
-
-        // this.updateStateFromServer(this.inputRef.current.value);
     }
 
     render() {
