@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import * as signalR from '@microsoft/signalr';
+import {HubConnectionState} from "@microsoft/signalr";
 
 function Square(props) {
     const [imgUrl, setImgUrl] = useState(' ');
@@ -114,13 +115,19 @@ class Game extends React.Component {
 
     startGame(event) {
 
-        if(this.connection.state === 'Disconnected'){
+        if(this.connection.state === HubConnectionState.Disconnected){
             this.connection.start().then(function () {
             console.log(this.connection.state)
             }).catch(function (err) {
                 console.log(err.toString());
             });
 
+        }
+    }
+
+    disconnect(){
+        if(this.connection.state === HubConnectionState.Connected){
+            this.connection.stop();
         }
     }
 
@@ -134,6 +141,7 @@ class Game extends React.Component {
         let status;
         if (winner !== undefined && winner !== '' && winner !== ' ') {
             status = 'Winner: ' + winner;
+            this.disconnect();
         } else {
             status = this.state.sign === undefined || this.state.sign === null ? 'Waiting for game start' : 'You are ' + this.state.sign;
         }
